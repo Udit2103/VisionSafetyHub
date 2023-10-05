@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam AI</title>
+    <style>
+        /* Reset some default styles for better consistency */
+        body, h1, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Global styles */
+        body {
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            background-image:url( "{{url_for('static',filename='images/28.jpg')}}");
+            /* background-image: url("C:/Users/uditpc/Pictures/deep_learning/project/static/images/28.jpg"); */
+            background-size: cover ;
+            background-attachment: fixed;
+        }
+
+        /* Header styles */
+        header {
+            /* background-color: #333; */
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 36px;
+        }
+
+        /* Navigation styles */
+        nav {
+            background-color: transparent;
+            text-align: center;
+            height:40px;
+            position: fixed;
+            /* left:20%; */
+            transition: padding 0.5s ease;
+            /* border-radius: 20px; */
+            width:100%;
+            
+        }
+        nav.scrolled {
+            background: linear-gradient(to top,rgba(55, 204, 179, 0.864), rgba(21, 77, 67, 0.967));
+            top:0;
+            color:white;
+            /* height: 10%; */
+            padding-top: 3%;
+            /* opacity: 95%; */
+            /* color:aqua; Change to your desired background color when scrolled */
+        }
+        nav a {
+            color: rgba(255, 255, 255, 0.705);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 20px;
+            
+            /* transition: background-color 0.3s ease-in-out; */
+        }
+
+        nav a:hover {
+            /* background-color: #555; */
+            opacity: 100%;
+            color: rgb(54, 191, 168);
+        }
+        /* Main content styles */
+   
+
+        /* Footer styles */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #33333386;
+            color: rgba(255, 255, 255, 0.979);
+        }
+
+        /* Developer introduction styles */
+        .developer-intro {
+            background-color: #33333354;
+            color: rgba(255, 255, 255, 0.582);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .developer-intro p {
+            font-size: 18px;
+        }
+        #detect{
+            
+            /* border:2px solid; */
+            margin:20px;
+            margin-bottom: 14%;
+           
+        }
+        #about{
+            padding:5%;
+            color:white;
+        }
+        #about p{
+            color:rgba(255, 255, 255, 0.768);
+        }
+        
+        
+   
+    
+    </style>
+    <script>
+        function sendEmail() {
+    var emailAddress = "rexudit9@example.com";
+    var subject = "Subject of the email";
+    var body = "This is the body of the email.";
+
+    // Construct the mailto URL with email address, subject, and body
+    var mailtoURL = "mailto:" + emailAddress + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+    // Redirect to the mail client with the pre-filled email
+    window.location.href = mailtoURL;
+}
+        function attend(){
+            window.location.href='/attend';
+        }
+        // JavaScript to change the navigation bar class on scroll
+window.addEventListener("scroll", function () {
+    const nav = document.querySelector("nav");
+    if (window.scrollY > 0) {
+        nav.classList.add("scrolled");
+    } else {
+        nav.classList.remove("scrolled");
+    }
+});
+
+    </script>
+    <body>
+        <header>
+            
+            <h1 style="color:rgb(255, 255, 255)"><img style="width:200px;padding-right: 50%;padding-left: 0;" src="{{ url_for('static', filename='images/7.png') }}" alt="Image 1"><a style="border-radius:20px;padding:10px 20px;background-color: rgba(54, 191, 168, 0.871);font-size:10px ;color:white" onclick="sendEmail">feedback</a></h1>
+        </header>
+        <nav>
+            <a href="/">Home</a>
+            
+            <a href="/services">Services</a>
+            <a href="/contact">Contact</a>
+        </nav>
+<section id="about">
+    <h2>Our Mission</h2>
+    <p>VisionSafetyHub is on a mission to redefine workplace safety by harnessing cutting-edge technology. We're driven by three core features:</p>
+    <br><br><br>
+    <h3>1. Smart Attendance Tracking</h3>
+    <p>Our innovative system redefines employee attendance. It activates only when safety equipment, such as helmets and gear, is detected, ensuring strict adherence to safety protocols. Say goodbye to manual attendance and hello to automated, safety-driven efficiency.</p>
+    <br><br>
+    <h3>2. Restricted Area Monitoring</h3>
+    <p>We empower real-time monitoring of restricted zones within video footage. Our system allows you to effortlessly draw free lines designating restricted areas. When an unauthorized individual crosses these boundaries, our technology instantly detects and records the breach, elevating workplace security to new heights.</p>
+    <br><br>
+    <h3>3. Emergency Gesture Recognition</h3>
+    <p>At VisionSafetyHub, we prioritize your team's well-being. In times of crisis, employees can discreetly signal for help by making a predefined hand gesture. Our advanced AI instantly recognizes this gesture and swiftly alerts your security team, ensuring a rapid and effective response to emergencies.</p>
+    <br><br>
+    <p>We are not just a technology provider; we are your partner in safeguarding your workforce. VisionSafetyHub is committed to enhancing safety, compliance, and peace of mind within your industrial setting.</p>
+</section>
+<footer>
+    &copy; 2023 VisionSafetyHub.com
+</footer>
+
+<div class="developer-intro">
+    <p>Meet the Developer</p>
+    <p style="font-size:15px">Udit Sharma is a passionate web developer dedicated to creating innovative and user-friendly web applications. With years of experience in front-end and back-end development, he is committed to delivering high-quality solutions that make a difference.</p>
+    <br><div>
+        <a href="https://www.instagram.com/_udit___/"><img width="2%" style="padding: 20px;"src="{{url_for('static',filename='images/12.png')}}"></a>
+        <a href="https://www.linkedin.com/in/udit-sharma-a4957824b/"><img width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/13.png')}}"></a>
+        <a href="https://github.com/Udit2103"><img  width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/14.jpg')}}"></a>
+        
+    </div>
+</div>
+</body>
+</html>

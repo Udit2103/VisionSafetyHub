@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam AI</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}"> -->
+    <style>
+        /* Reset some default styles for better consistency */
+        body, h1, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Global styles */
+        body {
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            /* background-image:url( "{{url_for('static',filename='images/9.jpg')}}"); */
+            background-image: url("{{url_for('static',filename='images/19.jpg')}}");
+             background-size:cover ;
+            background-attachment:fixed; 
+        }
+
+        /* Header styles */
+        header {
+            /* background-color: #333; */
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 36px;
+        }
+
+        /* Navigation styles */
+        nav {
+            background-color: transparent;
+            text-align: center;
+            height:40px;
+            position: fixed;
+            /* left:20%; */
+            transition: padding 0.5s ease;
+            /* border-radius: 20px; */
+            width:100%;
+            
+        }
+        nav.scrolled {
+            background: linear-gradient(to top,rgba(55, 204, 179, 0.864), rgba(21, 77, 67, 0.967));
+            top:0;
+            /* height: 10%; */
+            padding-top: 3%;
+            opacity: 95%;
+            /* color:aqua; Change to your desired background color when scrolled */
+        }
+        nav a {
+            color: rgba(255, 255, 255, 0.603);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 20px;
+            
+            /* transition: background-color 0.3s ease-in-out; */
+        }
+
+        nav a:hover {
+            /* background-color: #555; */
+            opacity: 100%;
+            color: rgb(54, 191, 168);
+        }
+        /* Main content styles */
+        .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
+            border: 2px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        img#webcam {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* Footer styles */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #33333386;
+            color: rgba(255, 255, 255, 0.979);
+        }
+
+        /* Developer introduction styles */
+        .developer-intro {
+            background-color: #33333354;
+            color: rgba(255, 255, 255, 0.582);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .developer-intro p {
+            font-size: 18px;
+        }
+        #detect{
+            
+            /* border:2px solid; */
+            margin:20px;
+            margin-bottom: 14%;
+           
+        }
+        
+        
+        #d{
+            /* background-color:/ #3d3a42ad; */
+            color: rgb(255, 255, 255);
+            transition: background-color 0.5s ;
+            text-decoration: none;
+            padding:15px 50px;
+            border-radius: 30px;
+            border:2px solid white;
+            
+        }
+        
+        #d:hover{
+            background-color:  rgba(54, 191, 168, 0.734);
+            border: 2px solid rgba(54, 191, 168, 0.734);
+             /* background-image: linear-gradient(to top,rgba(55, 204, 179, 0.864), rgba(21, 77, 67, 0.967));; */
+
+        }
+        #con:hover{
+            background-color: #3333338e;
+        }
+        .card-container {
+      display: flex;
+      flex-wrap: nowrap; /* Prevents cards from wrapping to the next line */
+      justify-content: space-between; /* Distribute space between cards */
+    }
+
+    /* Styles for individual cards */
+    .card {
+      flex: 1; /* Each card takes equal space */
+      /* border: 1px solid #ccc; */
+      align-items: center;
+      text-align: center;
+      max-width: 300px;
+      padding: 10px;
+      margin-left: 30px;
+      margin-top: 10%;
+      
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.74);
+      
+      transition: 0.5s ;
+      opacity: 60%;
+      background-color: rgba(51, 51, 51, 0.067);
+    }
+    .card:hover{
+        /* background-color:  rgba(54, 191, 168, 0.663); */
+        background: linear-gradient(to top,rgba(51, 51, 51, 0.067), rgba(54, 191, 168, 0.663));
+        padding: 40px;
+        opacity: 100%;
+    }
+
+    /* Style for the card's image */
+    .card img {
+      max-width: 60%;
+      height: auto;
+    }
+    .card b{
+        color:white;
+    }
+    #side_img{
+        position: absolute;
+    top: 130%;
+    right: -40%; /* Start off-screen to the right */
+    /* transform: translate(0, 150%); */
+    transition: right 1s ease-in-out; /* Add a transition for smooth sliding */
+    /* z-index: 1000;  */
+    }
+    
+    #side_img2{
+        position:absolute;
+        top:235%;
+        left:-60%;
+        width:35%;
+        border-radius: 20px;
+        /* transform: translate(0, -50%); */
+    transition: left 1s ease-in-out; /* Add a transition for smooth sliding */
+    /* z-index: 1000; */
+    }
+    #side_img3{
+        position:absolute;
+        top:310%;
+        right:-40%;
+        height:50%;
+        width:30%;
+        /* transform: translate(0, -50%); */
+    transition: right 1s ease-in-out; /* Add a transition for smooth sliding */
+    /* z-index: 1000; */
+    }
+  
+    </style>
+    <script>
+        function sendEmail() {
+    var emailAddress = "rexudit9@example.com";
+    var subject = "Subject of the email";
+    var body = "This is the body of the email.";
+
+    // Construct the mailto URL with email address, subject, and body
+    var mailtoURL = "mailto:" + emailAddress + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+    // Redirect to the mail client with the pre-filled email
+    window.location.href = mailtoURL;
+}
+        function attend(){
+            window.location.href='/attend';
+        }
+        function restrict(){
+            window.location.href='/restrict';
+        }
+        function alll(){
+            window.location.href='/camera4';
+        }
+        function gesture(){
+            window.location.href='/gesture';
+        }
+        function card(){
+            window.location.href='/card';
+        }
+        // JavaScript to change the navigation bar class on scroll
+window.addEventListener("scroll", function () {
+    const nav = document.querySelector("nav");
+    if (window.scrollY > 0) {
+        nav.classList.add("scrolled");
+    } else {
+        nav.classList.remove("scrolled");
+    }
+});
+function slideImage(name, r) {
+    if(r[0]=='-'){
+        setTimeout(()=>{
+            document.getElementById(name).style.right=r
+        },2000)
+    }
+    else{
+        document.getElementById(name).style.right=r
+    }
+    
+    
+    // imageContainer.style.right = '30%'; // Move the image into view
+}
+function slideImage2(name, r) {
+    if(r[0]=='-'){
+        setTimeout(()=>{
+            document.getElementById(name).style.left=r
+        },2000)
+    }
+    else{
+        document.getElementById(name).style.left=r
+    }
+    
+    // imageContainer.style.right = '30%'; // Move the image into view
+}
+
+    </script>
+</head>
+<!-- https://imgtr.ee/image/4.ZXnMe
+https://imgtr.ee/image/ZX31G
+https://imgtr.ee/image/ZXXX7
+https://imgtr.ee/image/ZXp5x
+https://imgtr.ee/image/ZXBwL -->
+<body>
+    <header>
+        
+        <h1 style="color:rgb(255, 255, 255)"><img style="width:200px;padding-right: 50%;padding-left: 0;" src="{{ url_for('static', filename='images/7.png') }}" alt="Image 1"><button onclick="sendEmail()" style="border-radius:20px;padding:10px 20px;background-color: rgba(54, 191, 168, 0.849);font-size:10px ;color:white" id="feed">feedback</button></h1>
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/contact">Contact</a>
+    </nav>
+    <main><br><br><br><br><hr>
+        <marquee direction="left" behavior="scroll" style ="color :white" scrollamount="10">Welcome to <span style="color:rgb(54, 191, 168)">VisionSafetyHub.com</span> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;   It is one of the most powersul AI/ML inbuit website which helps in improving security   </marquee>
+        <!-- <marquee direction="left" behavior="scroll" style ="color :white" scrollamount="10">Welcome to VisionSafetyHub.com</marquee> -->
+        <hr>
+        <div class="card-container">
+            <!-- Horizontal Card 1 -->
+            <div onclick="attend()" class="card">
+              <img width="200px" src="{{url_for('static',filename='images/18.png')}}" alt="Image 1">
+              <h4><b>SAFETY ATTENDANCE SYSTEM</b></h4>
+              <p>check safety of employess</p>
+            </div>
+          
+            <!-- Horizontal Card 2 -->
+            <div onclick="restrict()" class="card">
+              <img width="200px" src="{{url_for('static',filename='images/16.png')}}"  alt="Image 2">
+              <h4><b>RESTRICTED AREA SURVEILLANCE</b></h4>
+              <p>check for movements in restricted areas</p>
+            </div>
+            <div onclick="gesture()" class="card">
+                <img style="height:40%"  src="{{url_for('static',filename='images/17.png')}}" alt="Image 3"><br><br><br>
+                <h4><b>EMERGENCY GESTURE RECOGNITION</b></h4>
+                <p>Get Allert from workers straight away in emergency </p>
+              </div>
+          
+              
+              <div onclick="alll()"class="card">
+                <img width="200px"src="{{url_for('static',filename='images/15.png')}}"  alt="Image 4">
+                <h4><b>SAFETY IN WORKPLACE</b></h4>
+                <p>detect workers without halmet</p>
+              </div>
+              <div onclick="card()"class="card">
+                <img width="200px"src="{{url_for('static',filename='images/33.jpg')}}"  alt="Image 4">
+                <h4><b>FEED FACES DATA</b></h4>
+                <p>MAnually keep data of employees</p>
+              </div>
+          
+            <!-- Add more cards as needed -->
+          
+          </div>
+          
+        <div  style="margin-top: 10%;margin-left: 3%;">
+            <div onmouseenter="slideImage('side_img','6%')"  onmouseleave="slideImage('side_img','-40%')" id="detect">
+             
+                <h2 style="color:white;font-size: 30px;">SAFETY ATTENDANCE SYSTEM</h2><br>
+                <p style="width:50%;padding-right:0%;margin-right:0%;color:rgba(255, 255, 255, 0.788);font-size: 15px;margin-left: 2%;" >VisionSafetyHub utilizes AI and computer vision to revolutionize attendance tracking.<br> Our system takes attendance only when it detects that employees are wearing the<br> required safety equipment, such as helmets and safety gear. This ensures strict <br> adherence to safety protocols,promoting a safer work environment.<br><br>
+
+                    Gone are the days of manual attendance checks and the risk of human error.<br> With VisionSafetyHub, you can effortlessly maintain accurate attendance records while <br>prioritizing the safety of your employees.<br><br> Whether it's a bustling factory floor or a construction site,<br> our technology ensures that attendance is taken when safety is paramount.
+                    
+                    Choose  <br>VisionSafetyHub for seamlessattendance <br> management that prioritizes safety and compliance in your industrial workplace.</p>
+                    <img  id="side_img" src="{{url_for('static',filename='images/20.png')}}">
+                
+                  <br><br><br><br><br><a href="/attend" id="d" style="margin-left: 10%;margin-top:5px;width:25%;height:20%;" >DETECTION   ></a>
+            </div>
+            <div onmouseenter="slideImage2('side_img2','2%')"  onmouseleave="slideImage2('side_img2','-60%')"  id="detect" style="align-items: end;text-align: end;">
+       
+                <h2 style="color:white;font-size: 30px;">RESTRICTED AREA SURVEILLANCE</h2><br>
+                <p style="color:rgba(255, 255, 255, 0.788);font-size: 15px;margin-right: 2%;">With VisionSafetyHub's advanced AI and computer vision capabilities, you can effortlessly establish<br> and monitor restricted areas within your industrial setting. Our system allows you<br> to draw free lines on video footage, designating certain zones<br> as restricted.
+
+                    Whenever someone crosses these predefined boundaries, <br>VisionSafetyHub immediately detects the intrusion and records the incident.<br><br>This real-time monitoring not only helps maintain security but also ensures <br>compliance with safety regulations, reducing the risk of accidents and unauthorized access.
+                    
+                    <br> By integrating this feature into your safety protocols,you gain unparalleled control <br>over your industrial environment. VisionSafetyHub empowers you to<br> protect sensitive areas,prevent accidents, and maintain a secure workplace,<br> all through state-of-the-art technology and real-time monitoring.
+                    
+                    Choose VisionSafetyHub to take <br>command of your industrial safety and security with our advanced restricted zone monitoring feature.</p>
+                    <img  id="side_img2" src="{{url_for('static',filename='images/21.jpg')}}">
+                    <br><br><br><br><br><a href="/restrict" id="d" style="width:25%;height:20%;margin-right: 25%;" ><  RESTRICTED</a>
+            </div>
+            <div onmouseenter="slideImage('side_img3','6%')"  onmouseleave="slideImage('side_img3','-40%')"  id="detect">
+                
+                <h2 style="color:white;font-size: 30px;">EMERGENCY GESTURE RECOGNITION</h2>
+                <p style="color:rgba(255, 255, 255, 0.788);font-size: 15px;margin-left: 2%;">Our cutting-edge technology empowers employees to signal for help<br> in emergencies with a simple hand gesture.<br> Our AI system instantly identifies this unique gesture and alerts your security team,<br> ensuring rapid response times and enhanced workplace safety. With this feature,<br> your workforce gains confidence in their safety,<br> knowing that assistance is readily available.</p>
+                <img  id="side_img3" src="{{url_for('static',filename='images/22.png')}}">
+                  <br><br><br><br><br><a href="/gesture" id="d" style="margin-left: 10%;margin-top:5px;width:25%;height:20%;" >CHECK  ></a>
+            </div>
+            
+        </div>
+        
+    </main>
+    <footer>
+        &copy; 2023 VisionSafetyHub.com
+    </footer>
+
+    <div class="developer-intro">
+        <p>Meet the Developer</p>
+        <p style="font-size:15px">Udit Sharma is a passionate web developer dedicated to creating innovative and user-friendly web applications. With years of experience in front-end and back-end development, he is committed to delivering high-quality solutions that make a difference.</p>
+        <br><div>
+            <a href="https://www.instagram.com/_udit___/"><img width="2%" style="padding: 20px;"src="{{url_for('static',filename='images/12.png')}}"></a>
+            <a href="https://www.linkedin.com/in/udit-sharma-a4957824b/"><img width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/13.png')}}"></a>
+            <a href="https://github.com/Udit2103"><img  width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/14.jpg')}}"></a>
+            
+        </div>
+    </div>
+    
+</body>
+</html>

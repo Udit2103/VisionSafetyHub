@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Drawing</title>
+    <style>
+        /* Reset some default styles for better consistency */
+        body, h1, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Global styles */
+        body {
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            background-image:url( "{{url_for('static',filename='images/32.jpg')}}");
+            /* background-image: url("C:/Users/uditpc/Pictures/deep_learning/project/static/images/19.jpg"); */
+            background-size: cover ;
+            background-attachment: fixed;
+            
+        }
+
+        /* Header styles */
+        header {
+            /* background-color: #333; */
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 36px;
+        }
+
+        /* Navigation styles */
+        nav {
+            background-color: transparent;
+            text-align: center;
+            height:40px;
+            position: fixed;
+            /* left:20%; */
+            transition: padding 0.5s ease;
+            /* border-radius: 20px; */
+            width:100%;
+            
+        }
+        nav.scrolled {
+            background: linear-gradient(to top,rgba(55, 204, 179, 0.864), rgba(21, 77, 67, 0.967));
+            top:0;
+            /* height: 10%; */
+            padding-top: 3%;
+            opacity: 95%;
+            /* color:aqua; Change to your desired background color when scrolled */
+        }
+        nav a {
+            color: rgba(255, 255, 255, 0.603);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 20px;
+            
+            /* transition: background-color 0.3s ease-in-out; */
+        }
+
+        nav a:hover {
+            /* background-color: #555; */
+            opacity: 100%;
+            color: rgb(54, 191, 168);
+        }
+
+        /* Main content styles */
+   
+
+        /* Footer styles */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #33333386;
+            color: rgba(255, 255, 255, 0.979);
+        }
+
+        /* Developer introduction styles */
+        .developer-intro {
+            background-color: #33333354;
+            color: rgba(255, 255, 255, 0.582);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .developer-intro p {
+            font-size: 18px;
+        }
+       #but{
+        padding:15px 50px;
+        border-radius: 30px;
+        color:white;
+        background-color: transparent;
+        transition: 0.5s;
+        border:0px;
+
+       }
+       #but:hover{
+        background-color: rgba(128, 128, 128, 0.418);
+       }
+       #imageInput{
+        padding:15px 50px;
+        border-radius: 30px;
+        color:white;
+        background-color: transparent;
+        transition: 0.5s;
+        border:0px;
+
+       }
+       #imageInput:hover{
+        background-color: rgba(128, 128, 128, 0.418);
+       }
+       canvas{
+        margin-left: 5%;
+       }
+       #next{
+        padding:15px 50px;
+        border-radius: 30px;
+        color:white;
+        background-color:rgba(54, 191, 168, 0.813);
+        transition: padding 0.5s;
+        border:0px;
+       }
+       #next:hover{
+        padding:20px 70px;
+       }
+        
+    </style>
+    <script>
+        function sendEmail() {
+    var emailAddress = "rexudit9@example.com";
+    var subject = "Subject of the email";
+    var body = "This is the body of the email.";
+
+    // Construct the mailto URL with email address, subject, and body
+    var mailtoURL = "mailto:" + emailAddress + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+    // Redirect to the mail client with the pre-filled email
+    window.location.href = mailtoURL;
+}
+        
+        // JavaScript to change the navigation bar class on scroll
+        window.addEventListener("scroll", function () {
+    const nav = document.querySelector("nav");
+    if (window.scrollY > 0) {
+        nav.classList.add("scrolled");
+    } else {
+        nav.classList.remove("scrolled");
+    }
+});
+function captureImage() {
+    // Access the user's webcam
+    navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(function (stream) {
+            const video = document.createElement('video');
+            const canvas = document.getElementById('imageCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set the video source and start playing
+            video.srcObject = stream;
+            video.play();
+
+            // Capture a frame from the video and draw it on the canvas
+            video.addEventListener('canplay', function () {
+                // Adjust the canvas dimensions to match the video frame size
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                // Draw the video frame on the canvas
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Stop the webcam stream
+                stream.getTracks().forEach(track => track.stop());
+
+                // Clean up the video element
+                video.remove();
+            });
+        })
+        .catch(function (error) {
+            console.error('Error accessing webcam:', error);
+        });
+}
+
+
+    </script>
+
+</head>
+<body>
+    <header>
+        
+        <h1 style="color:rgb(255, 255, 255)"><img onclick="sendEmail()" style="width:200px;padding-right: 50%;padding-left: 0;" src="{{ url_for('static', filename='images/7.png') }}" alt="Image 1"><a style="border-radius:20px;padding:10px 20px;background-color: rgba(54, 191, 168, 0.849);font-size:10px ;color:white">feedback</a></h1>
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/contact">Contact</a>
+    
+        <a href="/restrict/camera2/breach">Breaches</a>
+    </nav>
+    <h1 style="margin-top: 4%;color: white;padding-left:100px;margin-bottom: 0%;">Image Drawing</h1>
+    <p style="margin-top:2%;margin-left:7%;color: rgba(255, 255, 255, 0.685);">Mark all the area which is not restriced and doesn't require attention ,Mark the area in form of triangles  <br>Choose any three points after uploading image   ;]</p>
+    
+    <br>
+    <table>
+        <tr>
+            <td style="width:80%">
+                <canvas id="imageCanvas" style="border-radius: 10px;" ></canvas>
+            </td>
+            <td style="background-color: rgba(128, 128, 128, 0.151);border-radius:10px 0px 0px 10px;">
+                <!-- Input for loading image from storage -->
+                <input type="file" id="imageInput" accept="image/*"><br>
+                <button id="but" onclick="loadImage()">Load Image</button>
+                <br>
+
+                <!-- Button for capturing image from webcam -->
+                <button id="but" onclick="captureImage()">Capture from Webcam</button>
+                <br>
+
+                <!-- Other buttons and form elements -->
+                <button id="but" onclick="clearCanvas()">Clear Canvas</button>
+                <br>
+                <button id="but" onclick="displayPoints()">Display Points</button><br>
+                <form align="right" id="formData" style="width:80%;margin:1%;color:white" onsubmit="sendDataToBackend(event)">
+                    <div id="triangleList" style="font-size: 10px;"></div><br><br>
+                    <button id="next" type="submit">Submit Data</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    
+    <div id="pointCoordinates"></div>
+    
+    
+    
+    <button onclick="next()" id="next" style="margin-bottom:6%;margin-left:6%">USE PREVIOUSLY USED POINTS ONLY</button>
+    <footer>
+        &copy; 2023 VisionSafetyHub.com
+    </footer>
+
+    <div class="developer-intro">
+        <p>Meet the Developer</p>
+        <p style="font-size:15px">Udit Sharma is a passionate web developer dedicated to creating innovative and user-friendly web applications. With years of experience in front-end and back-end development, he is committed to delivering high-quality solutions that make a difference.</p>
+        <br><div>
+            <a href="https://www.instagram.com/_udit___/"><img width="2%" style="padding: 20px;"src="{{url_for('static',filename='images/12.png')}}"></a>
+            <a href="https://www.linkedin.com/in/udit-sharma-a4957824b/"><img width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/13.png')}}"></a>
+            <a href="https://github.com/Udit2103"><img  width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/14.jpg')}}"></a>
+            
+        </div>
+    </div>
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imageCanvas = document.getElementById('imageCanvas');
+        const ctx = imageCanvas.getContext('2d');
+        let isDrawing = false;
+        let points = [];
+        let triangles = [];
+
+        function loadImage() {
+            const file = imageInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = new Image();
+                img.src = e.target.result;
+
+                img.onload = function () {
+                    ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+                    ctx.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
+                };
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+            points = [];
+            document.getElementById('pointCoordinates').textContent = '';
+            document.getElementById('triangleList').innerHTML = '';
+            triangles=[]
+        }
+
+        // ...
+
+function next(){
+    window.location.href="/restrict/camera2"
+}
+function displayPoints() {
+    if (points.length !== 3) {
+        alert("Please select three points to form a triangle.");
+        return;
+    }
+
+    const triangle = [...points]; // Create a copy of points
+    triangles.push(triangle);
+    points = []; // Clear points for the next triangle
+
+    const triangleIndex = triangles.length;
+    const triangleText = `Triangle ${triangleIndex}: (${triangle[0][0].toFixed(0)}, ${triangle[0][1].toFixed(0)}), (${triangle[1][0].toFixed(0)}, ${triangle[1][1].toFixed(0)}), (${triangle[2][0].toFixed(0)}, ${triangle[2][1].toFixed(0)})`;
+
+    // Add triangle coordinates to the list
+    const triangleList = document.getElementById('triangleList');
+    const triangleDiv = document.createElement('div');
+    triangleDiv.textContent = triangleText;
+    triangleList.appendChild(triangleDiv);
+
+    // Draw the triangle on the canvas
+    ctx.beginPath();
+    ctx.moveTo(triangle[0][0], triangle[0][1]);
+    ctx.lineTo(triangle[1][0], triangle[1][1]);
+    ctx.lineTo(triangle[2][0], triangle[2][1]);
+    ctx.closePath();
+    ctx.strokeStyle = 'blue'; // Line color
+    ctx.lineWidth = 2; // Line width
+    ctx.stroke();
+}
+
+// Remove the "Add Triangle" button
+/*
+function addTriangle() {
+    if (points.length !== 3) {
+        alert("Please select three points to form a triangle.");
+        return;
+    }
+
+    const triangle = [...points]; // Create a copy of points
+    triangles.push(triangle);
+    points = []; // Clear points for the next triangle
+}
+*/
+
+function sendDataToBackend(event) {
+    event.preventDefault(); // Prevent form submission
+
+    if (triangles.length === 0) {
+        alert("Please add at least one triangle.");
+        return;
+    }
+
+    alert(triangles)
+    //\
+    // Send data to the backend using fetch
+    fetch('/restrict', {
+        method: 'POST',
+        body: JSON.stringify(triangles),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response from backend:', data);
+        // You can handle the response from the backend here
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+    window.location.href = "/restrict/camera2";
+}
+
+imageCanvas.addEventListener('mousedown', (e) => {
+    if (points.length < 3) {
+        const x = e.clientX - imageCanvas.getBoundingClientRect().left;
+        const y = e.clientY - imageCanvas.getBoundingClientRect().top;
+        points.push([x, y]);
+
+        ctx.fillStyle = 'red'; // Point color
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    if (points.length === 3) {
+        displayPoints();
+    }
+});
+// ...
+
+
+    </script>
+</body>
+</html>

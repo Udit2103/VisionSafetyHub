@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image</title>
+    <style>
+        /* Reset some default styles for better consistency */
+        body, h1, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Global styles */
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background-image: url("{{url_for('static',filename='images/32.jpg')}}");
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        /* Header styles */
+        header {
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 36px;
+        }
+
+        /* Navigation styles */
+        nav {
+            background-color: transparent;
+            text-align: center;
+            height:40px;
+            position: fixed;
+            /* left:20%; */
+            transition: padding 0.5s ease;
+            /* border-radius: 20px; */
+            width:100%;
+            
+        }
+        nav.scrolled {
+            background: linear-gradient(to top,rgba(55, 204, 179, 0.864), rgba(21, 77, 67, 0.967));
+            top:0;
+            /* height: 10%; */
+            padding-top: 3%;
+            opacity: 95%;
+            /* color:aqua; Change to your desired background color when scrolled */
+        }
+        nav a {
+            color: rgba(255, 255, 255, 0.603);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 20px;
+            
+            /* transition: background-color 0.3s ease-in-out; */
+        }
+
+        nav a:hover {
+            /* background-color: #555; */
+            opacity: 100%;
+            color: rgb(54, 191, 168);
+        }
+
+        /* Main content styles */
+        canvas {
+            margin-left: 5%;
+            width:680px;
+            border-radius: 20px;
+            height:420px;
+        }
+        #imageInput{
+            padding: 15px 50px;
+            border-radius: 30px;
+            color: white;
+            /* background-color: rgba(255, 255, 255, 0.438); */
+            transition: 0.5s;
+            border: 0px;
+            margin-top: 10px;
+        }
+        #imageInput:hover{
+            background-color: rgba(128, 128, 128, 0.418);
+        }
+        /* Buttons styles */
+        #but {
+            padding: 15px 50px;
+            border-radius: 30px;
+            color: white;
+            background-color: transparent;
+            transition: 0.5s;
+            border: 0px;
+            margin-top: 10px;
+        }
+        #but1 {
+            padding: 15px 50px;
+            border-radius: 30px;
+            color: white;
+            background-color: rgba(54, 191, 168, 0.817);
+            transition:padding 0.5s;
+            border: 0px;
+            margin-top: 10px;
+        }
+        #but1:hover{
+            padding:20px 70px;
+        }
+        #textInput{
+            padding: 15px 50px;
+            border-radius: 5px;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.192);
+            transition: 0.5s;
+            border: 0px;
+            margin-top: 10px;
+        }
+
+        #but:hover {
+            background-color: rgba(128, 128, 128, 0.418);
+        }
+        
+        #textInput:hover {
+            background-color: rgba(128, 128, 128, 0.418);
+        }
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #33333386;
+            color: rgba(255, 255, 255, 0.979);
+        }
+        .notification {
+    position: fixed;
+    top: 50%;
+    right: 8%;
+    transform: translateY(-50%);
+    background-color: #397cd4;
+    color: #fff;
+    padding: 10px;
+    opacity: 0%;
+    border-radius: 5px;
+    transition: opacity 0.5s ease;
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(-500%);
+        opacity:100%;
+    }
+    to {
+        transform: translateY(0);
+        
+    }
+}
+
+.animate-notification {
+    animation: slide-down 0.5s ease forwards;
+}
+        /* Developer introduction styles */
+        .developer-intro {
+            background-color: #33333354;
+            color: rgba(255, 255, 255, 0.582);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .developer-intro p {
+            font-size: 18px;
+        }
+        .del{
+            padding: 15px 50px;
+            border-radius: 30px;
+            color: white;
+            /* background-color: transparent; */
+            transition: 0.3s;
+            border: 0px;
+            margin-top: 10px;
+            transition: 0.5s;
+            background-color: rgba(255, 0, 0, 0.493);
+        }
+        .del:hover{
+            padding: 20px 70px;
+        }
+        #dell{
+            padding: 15px 50px;
+            border-radius: 30px;
+            color: white;
+            background-color: transparent;
+            transition: 0.5s;
+            border: 0px;
+            margin-top: 10px;
+        }
+        #chang{
+            opacity:0;
+            transition: opacity 0.5s;
+        }
+    </style>
+    <script>
+        window.addEventListener("scroll", function () {
+    const nav = document.querySelector("nav");
+    if (window.scrollY > 0) {
+        nav.classList.add("scrolled");
+    } else {
+        nav.classList.remove("scrolled");
+    }
+});
+        function captureImage() {
+            // Access the user's webcam
+            navigator.mediaDevices
+                .getUserMedia({ video: true })
+                .then(function (stream) {
+                    const video = document.createElement('video');
+                    const imageInput = document.getElementById('imageInput');
+                    const canvas = document.getElementById('imageCanvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Set the video source and start playing
+                    video.srcObject = stream;
+                    video.play();
+
+                    // Capture a frame from the video and draw it on the canvas
+                    video.addEventListener('canplay', function () {
+                        // Adjust the canvas dimensions to match the video frame size
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+
+                        // Draw the video frame on the canvas
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        
+                        // Stop the webcam stream
+                        stream.getTracks().forEach(track => track.stop());
+
+                        // Clean up the video element
+                        video.remove();
+                    });
+                    // const imageInput = document.getElementById('imageInput');
+                })
+                .catch(function (error) {
+                    console.error('Error accessing webcam:', error);
+                });
+        }
+        function sendEmail() {
+    var emailAddress = "rexudit9@example.com";
+    var subject = "Subject of the email";
+    var body = "This is the body of the email.";
+
+    // Construct the mailto URL with email address, subject, and body
+    var mailtoURL = "mailto:" + emailAddress + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+    // Redirect to the mail client with the pre-filled email
+    window.location.href = mailtoURL;
+}
+        function uploadImage() {
+            const imageInput = document.getElementById('imageInput');
+            const canvas = document.getElementById('imageCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const file = imageInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = new Image();
+                img.src = e.target.result;
+
+                img.onload = function () {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+            };
+
+            reader.readAsDataURL(file);
+        }
+    function dataURLToBlob(dataURL) {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new Blob([u8arr], { type: mime });
+}
+function send_delete_data_to_backend(){
+    const text=document.getElementById("dell").value
+    console.log(text)
+    const formData = new FormData();
+    
+    formData.append('text', text);
+    fetch("/delete",{
+        method:'POST',
+        body:formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response from backend:', text);
+        // alert('Image and text uploaded successfully');
+        showNotification()
+        document.getElementById("dell").value=""
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // alert("error ! while deleting")
+    });
+    
+
+    
+}
+    function sendDataToBackend(event) {
+    event.preventDefault(); // Prevent form submission
+    const canvas = document.getElementById('imageCanvas');
+    const imageInput = document.getElementById('imageInput');
+    const imageDataURL = canvas.toDataURL('image/jpeg');
+
+// Create a Blob from the data URL
+    const blob = dataURLToBlob(imageDataURL);
+
+// Create a File from the Blob
+    const file = new File([blob], 'captured_image.jpg', { type: 'image/jpeg' });
+
+// Set the File as the value of the input element's files
+    // fileInput.files = [file];
+
+    if (!file) {
+        alert('Please select an image.');
+        return;
+    }
+
+    const textInput = document.getElementById('textInput'); // Assuming you have an input element for text
+    const textValue = textInput.value;
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('text', textValue); // Add the text value to the form
+
+    fetch('/upload-image', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response from backend:', data);
+        // alert('Image and text uploaded successfully');
+        document.getElementById('textInput').value=""
+        showNotification()
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        allert("error! while registering")
+    });
+}
+function showNotification() {
+    var notification = document.getElementById('notification');
+    notification.style.opacity = 1; // Make it visible
+    notification.classList.add('animate-notification');
+
+    // Remove the animation class after a delay (e.g., 5000ms or 5 seconds)
+    setTimeout(function() {
+        notification.classList.remove('animate-notification');
+        notification.style.opacity = 0;
+    }, 5000); // Adjust the time as needed
+}
+function del_show(){
+    
+    document.getElementById('chang').style.opacity=100;
+}
+
+// Trigger the notification
+showNotification();
+
+    </script>
+</head>
+<body>
+
+    <header>
+        
+        <h1 style="color:rgb(255, 255, 255)"><img style="width:200px;padding-right: 50%;padding-left: 0;" src="{{ url_for('static', filename='images/7.png') }}" alt="Image 1"><a style="border-radius:20px;padding:10px 20px;background-color: rgba(54, 191, 168, 0.849);font-size:10px ;color:white" onclick="sendEmail()">feedback</a></h1>
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/contact">Contact</a>
+    </nav>
+    <h1 style="margin-top: 4%; color: white; padding-left: 100px; margin-bottom: 0%;">EMPLOYEE UPLOAD DATA</h1>
+    <br>
+    <div id="notification" class="notification">
+        EMPLOYEE DATA CHANGED SUCCESSFULLY
+    </div>
+    <table style="height:100px">
+        <tr>
+            <td style="width: 85%">
+                <canvas style="border-radius: 10px;"id="imageCanvas"></canvas>
+            </td>
+            <td style="background-color: rgba(128, 128, 128, 0.178);border-radius: 10px;">
+                <!-- Input for uploading image from storage -->
+                <input type="file" id="imageInput" accept="image/*"><br>
+                <button id="but" onclick="uploadImage()">Upload Image</button>
+                <br>
+
+                <!-- Button for capturing image from webcam -->
+                <button id="but" onclick="captureImage()">Capture from Webcam</button>
+                <br>
+                <input id="textInput" type="text" value="NAME OF EMPLOYEE" required><br><br><br>
+                <form align="right" id="formData" style="width: 80%; margin: 1%; color: white" onsubmit="sendDataToBackend(event)">
+        
+                    <button id="but1"  type="submit">Submit Image</button>
+                    
+                </form>
+            </td>
+        </tr>
+    </table>
+   
+    
+    <button id="but1" style="margin-right:500px;margin-left:5%" onclick="del_show()" >DELETE EMPLOYEE FACE DATA</button>
+    <div align="center" id="chang" style="margin-top:2%">
+        <input type="text" style="border-radius:5px;background-color: rgba(206, 206, 206, 0.301);" id="dell" value="NAME OF EMPLOYEE">
+        <button class="del" onclick="send_delete_data_to_backend()"  style="margin-bottom :5%;" >DELETE</button>
+    </div>
+    <footer>
+        &copy; 2023 VisionSafetyHub.com
+    </footer>
+
+    <div class="developer-intro">
+        <p>Meet the Developer</p>
+        <p style="font-size:15px">Udit Sharma is a passionate web developer dedicated to creating innovative and user-friendly web applications. With years of experience in front-end and back-end development, he is committed to delivering high-quality solutions that make a difference.</p>
+        <br><div>
+            <a href="https://www.instagram.com/_udit___/"><img width="2%" style="padding: 20px;"src="{{url_for('static',filename='images/12.png')}}"></a>
+            <a href="https://www.linkedin.com/in/udit-sharma-a4957824b/"><img width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/13.png')}}"></a>
+            <a href="https://github.com/Udit2103"><img  width="2%" style="padding: 20px;" src="{{url_for('static',filename='images/14.jpg')}}"></a>
+            
+        </div>
+    </div>
+</body>
+</html>
